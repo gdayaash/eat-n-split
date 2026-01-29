@@ -1,13 +1,66 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.layout-wrapper {
+  display: flex;
+}
+
+.user-card {
+  display: flex;
+  gap: 10px;
+  width: 300px;
+  border: 2px solid lightcoral;
+  padding: 5px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 0px;
+}
+
+.user-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.content-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-wrapper {
+  background-color: rgb(244, 212, 157);
+  width: 300px;
+  padding: 8px 5px;
+  border-radius: 5px;
+}
+
+.bill-inputs li {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0px;
+}
+
+li input,
+li select {
+  width: 100px;
+  padding: 2px 5px;
+}
+
+.friend-card-wrapper {
+  background-color: antiquewhite;
+  width: 350px;
+  padding: 10px 5px;
+  border-radius: 4px;
+  margin: 4px auto;
 }
