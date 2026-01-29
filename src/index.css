@@ -64,3 +64,14 @@ li select {
   border-radius: 4px;
   margin: 4px auto;
 }
+
+.add-frnd {
+  background-color: lightgreen;
+  color: orange;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
