@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-const members = [
+const initialMembers = [
   { name: "Scarlett", id: 1, image_url: "https://i.pravatar.cc" },
   { name: "Eugene", id: 2, image_url: "https://i.pravatar.cc" },
   { name: "Frozen", id: 3, image_url: "https://i.pravatar.cc" },
 ];
 
 export default function App() {
+  const [members, setMembers] = useState(() => initialMembers);
   const [select, setSelect] = useState(null);
   const [bill, setBill] = useState(0);
   const [sbill, setSBill] = useState(0);
@@ -49,13 +50,13 @@ export default function App() {
       id: members.length + 1,
       image_url: userImage,
     };
-    members.push(addMemObj);
     console.log(addMemObj);
+    setMembers((prev) => [...prev, addMemObj]);
     console.log(members);
   }
 
   let splitBill = Math.abs(bill - sbill);
-  const friendsName = members.map((e) => e.name);
+  // const friendsName = members.map((e) => e.name);
 
   return (
     <section>
@@ -103,6 +104,7 @@ function Usercard({ members, handleCardSubmit, select, desc }) {
           desc={desc}
         />
       ))}
+      {console.log(members)}
     </section>
   );
 }
