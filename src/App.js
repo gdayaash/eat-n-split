@@ -99,6 +99,7 @@ function Usercard({ members, handleCardSubmit, select, desc }) {
           name={e.name}
           key={e.id}
           id={e.id}
+          imageUrl={e.image_url}
           select={select?.id === e.id}
           handleSubmit={handleCardSubmit}
           desc={desc}
@@ -109,12 +110,12 @@ function Usercard({ members, handleCardSubmit, select, desc }) {
   );
 }
 
-function Profile({ name, id, handleSubmit, select, desc }) {
+function Profile({ name, id, handleSubmit, select, desc, imageUrl }) {
   return (
     <article className="user-card">
       <aside className="profile-info">
         <span>
-          <img src="https://i.pravatar.cc" alt={name} />
+          <img src={imageUrl} alt={name} />
         </span>
         <span className="content-box">
           <p>{name}</p>
