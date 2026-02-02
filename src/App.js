@@ -17,8 +17,7 @@ export default function App() {
 
   function handleCardSubmit(id, name) {
     // setSelect(id);
-    setSelect((prevID) => (prevID === id ? null : { id, name }));
-    console.log(select);
+    setSelect((prevID) => (prevID?.id === id ? null : { id, name }));
   }
 
   function handleBill(e) {
@@ -52,6 +51,7 @@ export default function App() {
     };
     console.log(addMemObj);
     setMembers((prev) => [...prev, addMemObj]);
+    setAdd(false);
     console.log(members);
   }
 
@@ -68,6 +68,7 @@ export default function App() {
           select={select}
           desc={desc}
         />
+
         {select !== null && (
           <BillCard
             members={members}
@@ -77,6 +78,7 @@ export default function App() {
             setSBill={handleSbill}
             splitBill={splitBill}
             select={select}
+            setSelect={handleCardSubmit}
             payer={payer}
             setPay={handlePayer}
             setDesc={setDesc}
@@ -140,11 +142,12 @@ function BillCard({
   splitBill,
   members,
   select,
+  setSelect,
   payer,
   setPay,
   setDesc,
 }) {
-  let selectedFriend = members.find((e) => e.id === select.id);
+  let selectedFriend = members.find((e) => e.id === select?.id);
   let friendName = selectedFriend?.name;
   console.log(friendName);
   return (
