@@ -75,3 +75,23 @@ li select {
   border-radius: 5px;
   cursor: pointer;
 }
+
+.mine,
+.owe,
+.even {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.mine {
+  color: darkgreen;
+}
+
+.owe {
+  color: red;
+}
+
+.even {
+  color: black;
+}

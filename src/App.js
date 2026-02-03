@@ -1,132 +1,128 @@
 import { useState } from "react";
 
 const initialMembers = [
-  { name: "Scarlett", id: 1, image_url: "https://i.pravatar.cc" },
-  { name: "Eugene", id: 2, image_url: "https://i.pravatar.cc" },
-  { name: "Frozen", id: 3, image_url: "https://i.pravatar.cc" },
+  { name: "Scarlett", id: 1, image_url: "https://i.pravatar.cc", balance: 5 },
+  { name: "Eugene", id: 2, image_url: "https://i.pravatar.cc", balance: 5 },
+  { name: "Frozen", id: 3, image_url: "https://i.pravatar.cc", balance: -15 },
+  { name: "Chris", id: 4, image_url: "https://i.pravatar.cc", balance: 0 },
 ];
 
 export default function App() {
   const [members, setMembers] = useState(() => initialMembers);
   const [select, setSelect] = useState(null);
+  const [addMembers, setAddMembers] = useState(false);
   const [bill, setBill] = useState(0);
-  const [sbill, setSBill] = useState(0);
-  const [payer, setPayer] = useState("you");
-  const [desc, setDesc] = useState("Both are Even");
-  const [add, setAdd] = useState(false);
+  const [userBill, setUserBill] = useState(0);
+  const [payer, setPayer] = useState("user");
 
-  function handleCardSubmit(id, name) {
-    // setSelect(id);
-    setSelect((prevID) => (prevID?.id === id ? null : { id, name }));
+  function handleSelect(id, name) {
+    setSelect((prev) => (prev?.id === id ? null : { id, name }));
+    setAddMembers(false);
+    console.log(select);
   }
 
-  function handleBill(e) {
+  function handleAddMem(e) {
     console.log(e);
-    setBill(e);
-  }
-
-  function handleSbill(e) {
-    console.log(e);
-    setSBill(e);
-  }
-
-  function handlePayer(payer) {
-    setPayer(payer);
-  }
-
-  function handleAddFriend() {
-    setAdd((prev) => !prev);
-    console.log(add);
-  }
-
-  function handleAddMembers(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const name = formData.get("name");
-    const userImage = formData.get("image_url");
-    const addMemObj = {
-      name: name,
-      id: members.length + 1,
-      image_url: userImage,
-    };
-    console.log(addMemObj);
-    setMembers((prev) => [...prev, addMemObj]);
-    setAdd(false);
+    setMembers((prev) => [...prev, e]);
     console.log(members);
+    setAddMembers(false);
   }
 
-  let splitBill = Math.abs(bill - sbill);
-  // const friendsName = members.map((e) => e.name);
+  function addMemToggle() {
+    setAddMembers((prev) => !prev);
+    setSelect(null);
+  }
 
+  function handleBillSubmit(bill, userBill, FriendsBill, payer) {
+    let updatedBill;
+    if (payer === "user") {
+      updatedBill = members.map((e) =>
+        e.id === select.id ? { ...e, balance: e.balance + FriendsBill } : e,
+      );
+      setMembers(updatedBill);
+      console.log(updatedBill);
+      setSelect(null);
+    } else {
+      updatedBill = members.map((e) =>
+        e.id === select.id ? { ...e, balance: e.balance - userBill } : e,
+      );
+      setMembers(updatedBill);
+      console.log(updatedBill);
+      setSelect(null);
+    }
+  }
   return (
     <section>
       <main>
         <h1>Eat-N-Split</h1>
         <Usercard
           members={members}
-          handleCardSubmit={handleCardSubmit}
+          handleSelect={handleSelect}
           select={select}
-          desc={desc}
         />
 
-        {select !== null && (
+        {select && (
           <BillCard
-            members={members}
             bill={bill}
-            setBill={handleBill}
-            sbill={sbill}
-            setSBill={handleSbill}
-            splitBill={splitBill}
+            userBill={userBill}
+            members={members}
             select={select}
-            setSelect={handleCardSubmit}
+            setBill={setBill}
+            setUserBill={setUserBill}
+            handleBillSubmit={handleBillSubmit}
             payer={payer}
-            setPay={handlePayer}
-            setDesc={setDesc}
+            setPayer={setPayer}
           />
         )}
 
-        <Addbutton add={add} setAdd={handleAddFriend} />
-
-        {add && <AddFriend members={members} addMem={handleAddMembers} />}
+        <Addbutton toggleAdd={addMemToggle} />
+        {addMembers && <AddFriend addMem={handleAddMem} members={members} />}
       </main>
     </section>
   );
 }
 
-function Usercard({ members, handleCardSubmit, select, desc }) {
+function Usercard({ members, handleSelect, select }) {
   return (
-    <section>
+    <ul>
       {members.map((e) => (
         <Profile
           name={e.name}
-          key={e.id}
           id={e.id}
-          imageUrl={e.image_url}
+          image_url={e.image_url}
+          key={e.id}
           select={select?.id === e.id}
-          handleSubmit={handleCardSubmit}
-          desc={desc}
+          balance={e.balance}
+          handleSelect={handleSelect}
         />
       ))}
-      {console.log(members)}
-    </section>
+    </ul>
   );
 }
 
-function Profile({ name, id, handleSubmit, select, desc, imageUrl }) {
+function Profile({ name, image_url, balance, handleSelect, id, select }) {
   return (
     <article className="user-card">
       <aside className="profile-info">
         <span>
-          <img src={imageUrl} alt={name} />
+          <img src={image_url + "/150?u=" + id} alt={name} />
         </span>
         <span className="content-box">
           <p>{name}</p>
-          <p>{select ? desc : "Both are Even"}</p>
+          <p className={balance > 0 ? "mine" : undefined}>
+            {balance > 0 && `${name} owes you ${balance}`}
+          </p>
+          <p className={balance < 0 ? "owe" : undefined}>
+            {balance < 0 && `You owe ${name} ${Math.abs(balance)}`}
+          </p>
+          <p className={balance === 0 ? `even` : undefined}>
+            {balance === 0 && `You and ${name} are Even`}
+          </p>
         </span>
       </aside>
 
       <aside>
-        <button onClick={() => handleSubmit(id, name)}>
+        <button onClick={() => handleSelect(id, name)}>
           {select ? "Close" : "Select"}
         </button>
       </aside>
@@ -136,36 +132,29 @@ function Profile({ name, id, handleSubmit, select, desc, imageUrl }) {
 
 function BillCard({
   bill,
-  setBill,
-  sbill,
-  setSBill,
-  splitBill,
+  userBill,
   members,
   select,
-  setSelect,
+  setBill,
+  setUserBill,
+  handleBillSubmit,
   payer,
-  setPay,
-  setDesc,
+  setPayer,
 }) {
-  let selectedFriend = members.find((e) => e.id === select?.id);
-  let friendName = selectedFriend?.name;
-  console.log(friendName);
+  let selectedFriendId = members.find((e) => e.id === select.id);
+  let activeFrd = selectedFriendId.name;
+
+  let FriendsBill = bill - userBill;
   return (
     <div className="card-wrapper">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (payer === friendName) {
-            console.log("Submit ID: " + select.id);
-            setDesc(`You owe ${friendName} Rs.${sbill}/-`);
-          } else if (payer === "you") {
-            console.log("Submit ID: " + select.id);
-            setDesc(`${friendName} owes You Rs.${splitBill}/-`);
-          }
+          handleBillSubmit(bill, userBill, FriendsBill, payer);
         }}
       >
         <ul className="bill-inputs">
-          <legend>Split With {friendName}</legend>
+          <legend>Split With {activeFrd} </legend>
           <li>
             <span>💰 Bill value</span>
             <span>
@@ -181,26 +170,25 @@ function BillCard({
             <span>
               <input
                 type="number"
-                id="yourBill"
-                value={sbill}
-                onChange={(e) => setSBill(e.target.value)}
+                value={userBill}
+                onChange={(e) =>
+                  setUserBill(e.target.value > bill ? userBill : e.target.value)
+                }
               />
             </span>
           </li>
           <li>
+            <span>🫂 {activeFrd} Expense</span>
             <span>
-              🫂 {friendName === undefined ? `Friend's` : friendName} Expense
-            </span>
-            <span>
-              <input type="number" disabled value={splitBill} />
+              <input type="number" disabled value={FriendsBill} />
             </span>
           </li>
           <li>
             <span>💲 Who is paying the bill ?</span>
             <span>
-              <select value={payer} onChange={(e) => setPay(e.target.value)}>
-                <option value={"you"}>You</option>
-                <option value={friendName}>{friendName}</option>
+              <select value={payer} onChange={(e) => setPayer(e.target.value)}>
+                <option value="user">You</option>
+                <option value={activeFrd}>{activeFrd}</option>
               </select>
             </span>
           </li>
@@ -213,29 +201,50 @@ function BillCard({
   );
 }
 
-function Addbutton({ add, setAdd }) {
+function Addbutton({ toggleAdd }) {
   return (
-    <button className="add-frnd" onClick={setAdd}>
+    <button className="add-frnd" onClick={toggleAdd}>
       Add Friend
     </button>
   );
 }
 
 function AddFriend({ members, addMem }) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const newFriend = {
+    name,
+    id: members.length + 1,
+    image_url: image,
+    balance: 0,
+  };
   return (
     <div className="friend-card-wrapper">
-      <form onSubmit={addMem}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addMem(newFriend);
+        }}
+      >
         <ul className="bill-inputs">
           <li>
             <span>🕺 Friend Name</span>
             <span>
-              <input type="text" name="name" />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </span>
           </li>
           <li>
             <span>🏞️ Image URL</span>
             <span>
-              <input type="text" name="image_url" />
+              <input
+                type="text"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              />
             </span>
           </li>
           <li>
