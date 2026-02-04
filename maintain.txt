@@ -1,0 +1,8 @@
+TO Maintain React 18 Stable Version: do the following after installation of React
+
+npm install react@18.2.0 react-dom@18.2.0 
+rmdir node_modules       
+rmdir -rf node_modules 
+rm -rf node_modules package.lock.json
+npm install [do with package.json] file
+npm ls react
